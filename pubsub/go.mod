@@ -1,4 +1,4 @@
-module github.com/lunarhq/backend/pubsub
+module github.com/lunarhq/sharedutils/pubsub
 
 go 1.15
 
