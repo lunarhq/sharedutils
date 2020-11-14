@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	// BROKERS = "kafka-0.kafka-hs:9093,kafka-1.kafka-hs:9093,kafka-2.kafka-hs:9093"
-	BROKERS = "localhost:9093,localhost:9093,localhost:9093"
+	//@Todo move to env
+	BROKERS = "kafka-0.kafka-hs:9093,kafka-1.kafka-hs:9093,kafka-2.kafka-hs:9093"
+	// BROKERS = "localhost:9093,localhost:9093,localhost:9093"
 )
 
 type Reader struct {
