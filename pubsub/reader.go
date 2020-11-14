@@ -27,12 +27,12 @@ func NewReader(topic, group string) *Reader {
 	return r
 }
 
-func (r *Reader) Read(out *interface{}) error {
+func (r *Reader) Read(out interface{}) error {
 	m, err := r.reader.ReadMessage(context.Background())
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(m.Value, out); err != nil {
+	if err := json.Unmarshal(m.Value, &out); err != nil {
 		return err
 	}
 	return nil
