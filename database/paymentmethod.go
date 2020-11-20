@@ -14,3 +14,7 @@ type PaymentMethod struct {
 type PaymentMethodListParams struct {
 	AccountID *string
 }
+
+type PaymentMethodGetParams struct {
+	AccountID *string
+}
