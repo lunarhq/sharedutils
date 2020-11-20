@@ -30,7 +30,7 @@ func (c *Client) Delete(id string) error {
 		if err != nil {
 			return err
 		}
-		_, err = c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": pID})
+		_, err = c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": pid})
 		if err != nil {
 			return err
 		}
