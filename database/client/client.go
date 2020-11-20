@@ -29,7 +29,7 @@ type DB struct {
 	Invoices       *invoice.Client
 }
 
-func NewClient() (*DB, error) {
+func New() (*DB, error) {
 	mdb, err := mongo.NewClient(options.Client().ApplyURI(MongoURI))
 	if err != nil {
 		return nil, err
