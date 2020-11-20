@@ -1,3 +1,5 @@
+package database
+
 func String(s string) *string {
 	return &v
 }
