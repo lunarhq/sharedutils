@@ -5,6 +5,7 @@ import (
 
 	"github.com/lunarhq/sharedutils/database"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -23,7 +24,20 @@ func (c *Client) Update() error { return nil }
 func (c *Client) Delete(id string) error {
 	ctx := context.Background()
 	_, err := c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": id})
-	return err
+	if err != nil {
+		//@Todo hack since some old ids were using primitive ones
+		pid, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			return err
+		}
+		_, err = c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": pID})
+		if err != nil {
+			return err
+		}
+		return nil
+
+	}
+	return nil
 }
 
 func (c *Client) List(p *database.KeyListParams) ([]*database.Key, error) {
