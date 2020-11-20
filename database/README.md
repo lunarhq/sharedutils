@@ -2,10 +2,10 @@ How to use
 =============
 
 	import (
-		"github.com/lunarhq/sharedutils/database"
+		"github.com/lunarhq/sharedutils/database/client"
 	)
 
-	db := database.NewClient()
+	db := client.New()
 
 	db.Keys.List()
 	db.Keys.Get()
