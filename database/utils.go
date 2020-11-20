@@ -1,7 +1,7 @@
 package database
 
 func String(s string) *string {
-	return &v
+	return &s
 }
 func StringVal(s *string) string {
 	if s != nil {
@@ -11,7 +11,7 @@ func StringVal(s *string) string {
 }
 
 func Int(i int) *int {
-	return &v
+	return &i
 }
 func IntVal(i *int) int {
 	if i != nil {
