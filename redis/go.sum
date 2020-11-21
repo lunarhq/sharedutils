@@ -1,0 +1,4 @@
+github.com/go-redis/redis v6.15.9+incompatible h1:K0pv1D7EQUjfyoMql+r/jZqCLizCGKFlFgcHWWmHQjg=
+github.com/go-redis/redis v6.15.9+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
+github.com/lunarhq/sharedutils v0.0.0-20201121020817-1b5f5a29c2bb h1:plYP5kQCZChvGZb44hhlkTd7J4ultY+0zCcbpJF3Juw=
+github.com/lunarhq/sharedutils v0.0.0-20201121020817-1b5f5a29c2bb/go.mod h1:zcJ+777asMzdxzgds+PVKF5CikiiJQShwRlajqVs8aE=
