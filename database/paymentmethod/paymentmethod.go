@@ -2,6 +2,7 @@ package paymentmethod
 
 import (
 	"context"
+	"time"
 
 	"github.com/lunarhq/sharedutils/database"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,11 +15,39 @@ type Client struct {
 
 func (c *Client) Create(pm *database.PaymentMethod) error {
 	ctx := context.Background()
+	pm.CreatedAt = time.Now()
 	_, err := c.DB.Collection("payment_methods").InsertOne(ctx, pm)
 	return err
 }
 
-func (c *Client) Update() error { return nil }
+func (c *Client) Update(id string, p database.PaymentMethodUpdateParams) error {
+	ctx := context.Background()
+	payload := bson.M{}
+
+	if p.AccountID != nil {
+		payload["accountId"] = p.AccountID
+	}
+	if p.StripeCustomerID != nil {
+		payload["stripeCustomerId"] = p.StripeCustomerID
+	}
+	if p.Brand != nil {
+		payload["brand"] = p.Brand
+	}
+	if p.Last4 != nil {
+		payload["last4"] = p.Last4
+	}
+	if p.Expiry != nil {
+		payload["expiry"] = p.Expiry
+	}
+	if p.Status != nil {
+		payload["status"] = p.Status
+	}
+
+	payload["updatedAt"] = time.Now()
+
+	_, err := c.DB.Collection("payment_methods").UpdateOne(ctx, bson.M{"_id": id}, payload)
+	return err
+}
 
 func (c *Client) Delete(id string) error {
 	ctx := context.Background()

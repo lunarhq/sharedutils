@@ -2,8 +2,10 @@ package account
 
 import (
 	"context"
+	"time"
 
 	"github.com/lunarhq/sharedutils/database"
+	"github.com/segmentio/ksuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -14,10 +16,43 @@ type Client struct {
 	DB *mongo.Database
 }
 
-func (c *Client) Create(acc *database.Account) error {
+func (c *Client) Create(p database.AccountCreateParams) (*database.Account, error) {
+	acc := database.Account{
+		ID:        "acc_" + ksuid.New().String(),
+		CreatedAt: time.Now(),
+		Blocked:   false,
+		Internal:  false,
+		Pro:       false,
+	}
+
+	if p.Name != nil {
+		acc.Name = *p.Name
+	}
+	if p.Email != nil {
+		acc.Email = *p.Email
+	}
+	if p.Pro != nil {
+		acc.Pro = *p.Pro
+	}
+	if p.Internal != nil {
+		acc.Internal = *p.Internal
+	}
+	if p.Blocked != nil {
+		acc.Blocked = *p.Blocked
+	}
+	if p.StripeCustomerID != nil {
+		acc.Stripe.CustomerID = *p.StripeCustomerID
+	}
+	if p.StripeSubscriptionID != nil {
+		acc.Stripe.SubscriptionID = *p.StripeSubscriptionID
+	}
+	if p.StripeSubscriptionItems != nil {
+		acc.Stripe.SubscriptionItems = *p.StripeSubscriptionItems
+	}
+
 	ctx := context.Background()
 	_, err := c.DB.Collection("accounts").InsertOne(ctx, acc)
-	return err
+	return &acc, err
 }
 
 func (c *Client) Update(id string, p *database.AccountUpdateParams) error {
@@ -32,11 +67,11 @@ func (c *Client) Update(id string, p *database.AccountUpdateParams) error {
 	if p.Internal != nil {
 		payload["internal"] = p.Internal
 	}
-	if p.StripeCustomerId != nil {
-		payload["stripe.customerId"] = p.StripeCustomerId
+	if p.StripeCustomerID != nil {
+		payload["stripe.customerId"] = p.StripeCustomerID
 	}
-	if p.StripeSubscriptionId != nil {
-		payload["stripe.subscriptionId"] = p.StripeSubscriptionId
+	if p.StripeSubscriptionID != nil {
+		payload["stripe.subscriptionId"] = p.StripeSubscriptionID
 	}
 	if p.StripeSubscriptionItems != nil {
 		payload["stripe.subscriptionItems"] = p.StripeSubscriptionItems

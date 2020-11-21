@@ -5,10 +5,8 @@ import (
 	"time"
 
 	"github.com/lunarhq/sharedutils/database/account"
-	"github.com/lunarhq/sharedutils/database/invoice"
 	"github.com/lunarhq/sharedutils/database/key"
 	"github.com/lunarhq/sharedutils/database/paymentmethod"
-	"github.com/lunarhq/sharedutils/database/usagerecord"
 
 	"github.com/lunarhq/sharedutils/env"
 
@@ -25,8 +23,6 @@ type DB struct {
 	Keys           *key.Client
 	Accounts       *account.Client
 	PaymentMethods *paymentmethod.Client
-	UsageRecords   *usagerecord.Client
-	Invoices       *invoice.Client
 }
 
 func New() (*DB, error) {
@@ -48,8 +44,6 @@ func New() (*DB, error) {
 		Keys:           &key.Client{db},
 		Accounts:       &account.Client{db},
 		PaymentMethods: &paymentmethod.Client{db},
-		UsageRecords:   &usagerecord.Client{db},
-		Invoices:       &invoice.Client{db},
 	}
 	return d, nil
 }

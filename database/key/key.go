@@ -2,8 +2,11 @@ package key
 
 import (
 	"context"
+	"errors"
+	"time"
 
 	"github.com/lunarhq/sharedutils/database"
+	"github.com/segmentio/ksuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,19 +16,74 @@ type Client struct {
 	DB *mongo.Database
 }
 
-func (c *Client) Create(key *database.Key) error {
+func (c *Client) Create(p database.KeyCreateParams) (*database.Key, error) {
+	if p.AccountID == nil {
+		return nil, errors.New("AccountID required")
+	}
+
+	key := database.Key{
+		ID:          "key_" + ksuid.New().String(),
+		Created:     time.Now(),
+		AccountID:   *p.AccountID,
+		SecretToken: ksuid.New().String(),
+		Status:      "pending",
+		Pro:         false,
+	}
+
+	if p.Name != nil {
+		key.Name = *p.Name
+	}
+
+	if p.SecretToken != nil {
+		key.SecretToken = *p.SecretToken
+	}
+
+	if p.Status != nil {
+		key.Status = *p.Status
+	}
+
+	if p.Pro != nil {
+		key.Pro = *p.Pro
+	}
+
 	ctx := context.Background()
 	_, err := c.DB.Collection("keys").InsertOne(ctx, key)
-	return err
+	return &key, err
 }
 
-func (c *Client) Update() error { return nil }
+func (c *Client) Update(id string, p database.KeyUpdateParams) error {
+	ctx := context.Background()
+	payload := bson.M{}
+
+	//@Todo use reflect.ValueOf instead of checking all pointers
+	//and setting manually
+	if p.Name != nil {
+		payload["name"] = p.Name
+	}
+	if p.SecretToken != nil {
+		payload["secretToken"] = p.SecretToken
+	}
+	if p.AccountID != nil {
+		payload["accountId"] = p.AccountID
+	}
+	if p.Status != nil {
+		payload["status"] = p.Status
+	}
+	if p.Pro != nil {
+		payload["pro"] = p.Pro
+	}
+
+	_, err := c.DB.Collection("keys").UpdateOne(ctx, bson.M{"_id": id}, payload)
+	return err
+
+}
 
 func (c *Client) Delete(id string) error {
 	ctx := context.Background()
 	_, err := c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": id})
 	if err != nil {
 		//@Todo hack since some old ids were using primitive ones
+		//Remove this after all keys are migrated to new syntax
 		pid, err := primitive.ObjectIDFromHex(id)
 		if err != nil {
 			return err
@@ -58,6 +116,7 @@ func (c *Client) List(p *database.KeyListParams) ([]*database.Key, error) {
 	return result, err
 
 }
+
 func (c *Client) Get(id string) (*database.Key, error) {
 	ctx := context.Background()
 	res := c.DB.Collection("keys").FindOne(ctx, bson.M{"_id": id})
@@ -68,4 +127,5 @@ func (c *Client) Get(id string) (*database.Key, error) {
 	err := res.Decode(&result)
 	return &result, err
 }
+
 func (c *Client) GetBySecretToken() error { return nil }
