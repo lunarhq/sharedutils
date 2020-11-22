@@ -70,6 +70,9 @@ func (c *Client) Update(id string, p *database.AccountUpdateParams) error {
 	if p.Name != nil {
 		payload["name"] = p.Name
 	}
+	if p.Pro != nil {
+		payload["pro"] = p.Pro
+	}
 	if p.Internal != nil {
 		payload["internal"] = p.Internal
 	}
