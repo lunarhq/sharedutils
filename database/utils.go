@@ -23,9 +23,9 @@ func IntVal(i *int) int {
 func Bool(b bool) *bool {
 	return &b
 }
-func BoolVal(s *bool) bool {
-	if s != nil {
-		return *bool
+func BoolVal(b *bool) bool {
+	if b != nil {
+		return *b
 	}
 	return false
 }
