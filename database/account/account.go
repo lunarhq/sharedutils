@@ -117,3 +117,14 @@ func (c *Client) Get(id string) (*types.Account, error) {
 	err := res.Decode(&result)
 	return &result, err
 }
+
+func (c *Client) GetByStripeID(stripeID string) (*types.Account, error) {
+	ctx := context.Background()
+	res := c.DB.Collection("accounts").FindOne(ctx, bson.M{"stripe.customerId": stripeID})
+	if res.Err() != nil {
+		return nil, res.Err()
+	}
+	var result types.Account
+	err := res.Decode(&result)
+	return &result, err
+}
