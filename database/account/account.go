@@ -24,6 +24,7 @@ func (c *Client) Create(p database.AccountCreateParams) (*types.Account, error) 
 		Blocked:   false,
 		Internal:  false,
 		Pro:       false,
+		Stripe:    &types.StripeData{},
 	}
 
 	if p.Name != nil {
