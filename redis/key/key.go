@@ -40,3 +40,9 @@ func (c *Client) Delete(secretToken string) error {
 	_, err := c.R.Del("token-" + secretToken).Result()
 	return err
 }
+
+//Lists all keys
+func (c *Client) List() ([]string, error) {
+	//@Todo this should be "token-*" I think
+	return c.R.Keys("*").Result()
+}
