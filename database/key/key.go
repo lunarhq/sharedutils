@@ -74,7 +74,7 @@ func (c *Client) Update(id string, p database.KeyUpdateParams) error {
 		payload["pro"] = p.Pro
 	}
 
-	_, err := c.DB.Collection("keys").UpdateOne(ctx, bson.M{"_id": id}, payload)
+	_, err := c.DB.Collection("keys").UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": payload})
 	return err
 
 }

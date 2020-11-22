@@ -46,7 +46,7 @@ func (c *Client) Update(id string, p database.PaymentMethodUpdateParams) error {
 
 	payload["updatedAt"] = time.Now()
 
-	_, err := c.DB.Collection("payment_methods").UpdateOne(ctx, bson.M{"_id": id}, payload)
+	_, err := c.DB.Collection("payment_methods").UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": payload})
 	return err
 }
 

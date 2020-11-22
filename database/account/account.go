@@ -83,7 +83,7 @@ func (c *Client) Update(id string, p *database.AccountUpdateParams) error {
 		payload["stripe.subscriptionItems"] = p.StripeSubscriptionItems
 	}
 
-	_, err := c.DB.Collection("accounts").UpdateOne(ctx, bson.M{"_id": id}, payload)
+	_, err := c.DB.Collection("accounts").UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": payload})
 	return err
 }
 
