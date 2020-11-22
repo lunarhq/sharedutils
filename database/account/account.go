@@ -19,7 +19,7 @@ type Client struct {
 
 func (c *Client) Create(p database.AccountCreateParams) (*types.Account, error) {
 	acc := types.Account{
-		ID:        "acc_" + ksuid.New().String(),
+		ID:        ksuid.New().String(),
 		CreatedAt: time.Now(),
 		Blocked:   false,
 		Internal:  false,

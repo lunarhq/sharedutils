@@ -23,7 +23,7 @@ func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
 	}
 
 	key := types.Key{
-		ID:          "key_" + ksuid.New().String(),
+		ID:          ksuid.New().String(),
 		Created:     time.Now(),
 		AccountID:   *p.AccountID,
 		SecretToken: ksuid.New().String(),
