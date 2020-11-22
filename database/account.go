@@ -1,6 +1,7 @@
 package database
 
 type AccountCreateParams struct {
+	ID                      *string
 	Name                    *string
 	Email                   *string
 	Pro                     *bool

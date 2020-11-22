@@ -27,6 +27,10 @@ func (c *Client) Create(p database.AccountCreateParams) (*types.Account, error) 
 		Stripe:    &types.StripeData{},
 	}
 
+	if p.ID != nil {
+		acc.ID = *p.ID
+	}
+
 	if p.Name != nil {
 		acc.Name = *p.Name
 	}
