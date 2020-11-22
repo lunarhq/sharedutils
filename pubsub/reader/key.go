@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/lunarhq/sharedutils/pubsub"
+	"github.com/lunarhq/sharedutils/types"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -27,12 +27,12 @@ func (kr *KeyReader) Close() error {
 	return kr.r.Close()
 }
 
-func (kr *KeyReader) Read() (*pubsub.Key, error) {
+func (kr *KeyReader) Read() (*types.Key, error) {
 	m, err := kr.r.ReadMessage(context.Background())
 	if err != nil {
 		return nil, err
 	}
-	var result pubsub.Key
+	var result types.Key
 	if err := json.Unmarshal(m.Value, &result); err != nil {
 		return nil, err
 	}

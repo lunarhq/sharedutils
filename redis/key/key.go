@@ -1,18 +1,18 @@
 package key
 
 import (
-	gr "github.com/go-redis/redis"
-	"github.com/lunarhq/sharedutils/redis"
+	"github.com/go-redis/redis"
+	"github.com/lunarhq/sharedutils/types"
 )
 
 type Client struct {
-	R *gr.Client
+	R *redis.Client
 }
 
-func (c *Client) Get(secretToken string) (*redis.Key, error) {
+func (c *Client) Get(secretToken string) (*types.Key, error) {
 	return nil, nil
 }
 
-func (c *Client) Store(key redis.Key) error {
+func (c *Client) Store(key types.Key) error {
 	return nil
 }

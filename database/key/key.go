@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/lunarhq/sharedutils/database"
+	"github.com/lunarhq/sharedutils/types"
 	"github.com/segmentio/ksuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,12 +17,12 @@ type Client struct {
 	DB *mongo.Database
 }
 
-func (c *Client) Create(p database.KeyCreateParams) (*database.Key, error) {
+func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
 	if p.AccountID == nil {
 		return nil, errors.New("AccountID required")
 	}
 
-	key := database.Key{
+	key := types.Key{
 		ID:          "key_" + ksuid.New().String(),
 		Created:     time.Now(),
 		AccountID:   *p.AccountID,
@@ -98,7 +99,7 @@ func (c *Client) Delete(id string) error {
 	return nil
 }
 
-func (c *Client) List(p *database.KeyListParams) ([]*database.Key, error) {
+func (c *Client) List(p *database.KeyListParams) ([]*types.Key, error) {
 	filter := bson.M{}
 	if p != nil && p.AccountID != nil {
 		filter["accountId"] = p.AccountID
@@ -111,19 +112,19 @@ func (c *Client) List(p *database.KeyListParams) ([]*database.Key, error) {
 	}
 	defer cur.Close(ctx)
 
-	var result []*database.Key
+	var result []*types.Key
 	err = cur.All(ctx, &result)
 	return result, err
 
 }
 
-func (c *Client) Get(id string) (*database.Key, error) {
+func (c *Client) Get(id string) (*types.Key, error) {
 	ctx := context.Background()
 	res := c.DB.Collection("keys").FindOne(ctx, bson.M{"_id": id})
 	if res.Err() != nil {
 		return nil, res.Err()
 	}
-	var result database.Key
+	var result types.Key
 	err := res.Decode(&result)
 	return &result, err
 }

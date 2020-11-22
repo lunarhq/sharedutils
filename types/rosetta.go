@@ -25,6 +25,10 @@ type RosettaRequest struct {
 	Currencies             []types.Currency             `json:"currencies,omitempty"`
 }
 
+type RosettaResponse struct {
+	//@Todo incomplete
+}
+
 //@Todo in future we can also put requesters headers/ip so we can use that for say Blacklisting etc.
 //This is the payload that is sent whenever there is an api request on api-gw
 type PubSubApiRequestPayload struct {

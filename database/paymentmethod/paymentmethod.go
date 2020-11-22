@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/lunarhq/sharedutils/database"
+	"github.com/lunarhq/sharedutils/types"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -13,7 +14,7 @@ type Client struct {
 	DB *mongo.Database
 }
 
-func (c *Client) Create(pm *database.PaymentMethod) error {
+func (c *Client) Create(pm *types.PaymentMethod) error {
 	ctx := context.Background()
 	pm.CreatedAt = time.Now()
 	_, err := c.DB.Collection("payment_methods").InsertOne(ctx, pm)
@@ -55,7 +56,7 @@ func (c *Client) Delete(id string) error {
 	return err
 }
 
-func (c *Client) List(p *database.PaymentMethodListParams) ([]*database.PaymentMethod, error) {
+func (c *Client) List(p *database.PaymentMethodListParams) ([]*types.PaymentMethod, error) {
 	filter := bson.M{}
 	if p != nil && p.AccountID != nil {
 		filter["accountId"] = p.AccountID
@@ -68,18 +69,18 @@ func (c *Client) List(p *database.PaymentMethodListParams) ([]*database.PaymentM
 	}
 	defer cur.Close(ctx)
 
-	var result []*database.PaymentMethod
+	var result []*types.PaymentMethod
 	err = cur.All(ctx, &result)
 	return result, err
 }
 
-func (c *Client) Get(id string) (*database.PaymentMethod, error) {
+func (c *Client) Get(id string) (*types.PaymentMethod, error) {
 	ctx := context.Background()
 	res := c.DB.Collection("payment_methods").FindOne(ctx, bson.M{"_id": id})
 	if res.Err() != nil {
 		return nil, res.Err()
 	}
-	var result database.PaymentMethod
+	var result types.PaymentMethod
 	err := res.Decode(&result)
 	return &result, err
 }

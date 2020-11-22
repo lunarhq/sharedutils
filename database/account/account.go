@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/lunarhq/sharedutils/database"
+	"github.com/lunarhq/sharedutils/types"
 	"github.com/segmentio/ksuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,8 +17,8 @@ type Client struct {
 	DB *mongo.Database
 }
 
-func (c *Client) Create(p database.AccountCreateParams) (*database.Account, error) {
-	acc := database.Account{
+func (c *Client) Create(p database.AccountCreateParams) (*types.Account, error) {
+	acc := types.Account{
 		ID:        "acc_" + ksuid.New().String(),
 		CreatedAt: time.Now(),
 		Blocked:   false,
@@ -87,7 +88,7 @@ func (c *Client) Delete(id string) error {
 	return err
 }
 
-func (c *Client) List() ([]*database.Account, error) {
+func (c *Client) List() ([]*types.Account, error) {
 	ctx := context.Background()
 
 	cur, err := c.DB.Collection("accounts").Find(ctx, bson.M{})
@@ -96,18 +97,18 @@ func (c *Client) List() ([]*database.Account, error) {
 	}
 	defer cur.Close(ctx)
 
-	var result []*database.Account
+	var result []*types.Account
 	err = cur.All(ctx, &result)
 	return result, err
 }
 
-func (c *Client) Get(id string) (*database.Account, error) {
+func (c *Client) Get(id string) (*types.Account, error) {
 	ctx := context.Background()
 	res := c.DB.Collection("accounts").FindOne(ctx, bson.M{"_id": id})
 	if res.Err() != nil {
 		return nil, res.Err()
 	}
-	var result database.Account
+	var result types.Account
 	err := res.Decode(&result)
 	return &result, err
 }
