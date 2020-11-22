@@ -19,3 +19,13 @@ func IntVal(i *int) int {
 	}
 	return 0
 }
+
+func Bool(b bool) *bool {
+	return &b
+}
+func BoolVal(s *bool) bool {
+	if s != nil {
+		return *bool
+	}
+	return false
+}
