@@ -9,7 +9,7 @@ type Client struct {
 	R *redis.Client
 }
 
-func (c *Client) Get(path string, req types.RosettaRequest) (*types.Response, error) {
+func (c *Client) Get(path string, req types.RosettaRequest) (*types.RosettaResponse, error) {
 	return nil, nil
 }
 
