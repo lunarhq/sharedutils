@@ -12,14 +12,21 @@ How to use
 		"github.com/lunarhq/sharedutils/pubsub/reader"
 	)
 
-	//Publishing messages
-	writer := writer.NewWriter(pubsub.TopicKeyCreated)
+	//Publish messages
+	writer := writer.New(pubsub.TopicKeyCreated)
 	writer.KeyCreated(pubsub.Key{})
 
+	//Publish messages
+	pub := pubsub.NewWriter()
+	pub.Write(pubsub.TopicKeyCreated, &key)
 
-	//Reader messages
-	reader := reader.NewKeyReader(pubsub.TopicKeyCreated, "group-id")
+
+	//Read messages
+	reader := reader.New(pubsub.TopicKeyCreated, "group-id")
+	defer reader.Close()
+
 	for {
-		key, err := reader.Read()
+		var result types.Key
+		err := reader.Read(&result)
+		//Do stuff with result and err
 	}
-	reader.Close()

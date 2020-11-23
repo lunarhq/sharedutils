@@ -6,37 +6,38 @@ import (
 	"strings"
 
 	"github.com/segmentio/kafka-go"
+	"github.com/segmentio/ksuid"
 )
 
 type Writer struct {
-	writer *kafka.Writer
+	w map[string]*kafka.Writer
 }
 
-func NewWriter(topic string) *Writer {
-	w := &Writer{}
-	w.writer = kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  strings.Split(BROKERS, ","),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
-	})
+func NewWriter() *Writer {
+	return &Writer{w: make(map[string]*kafka.Writer)}
+}
+
+func (p *Writer) getWriter(topic string) *kafka.Writer {
+	w, found := p.w[topic]
+	if !found {
+		w = kafka.NewWriter(kafka.WriterConfig{
+			Brokers:  strings.Split(PubsubBrokers, ","),
+			Topic:    topic,
+			Balancer: &kafka.LeastBytes{},
+		})
+		p.w[topic] = w
+	}
 	return w
 }
 
-func (w *Writer) Write(key string, data interface{}) error {
+func (p *Writer) Write(topic string, data interface{}) error {
+	w := p.getWriter(topic)
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
-	if err := w.writer.WriteMessages(context.Background(),
-		kafka.Message{
-			Key:   []byte(key),
-			Value: []byte(bytes),
-		},
-	); err != nil {
-		return err
-	}
-	return nil
-}
-func (w *Writer) Close() error {
-	return w.writer.Close()
+	//@Todo Overridable key
+	key := topic + "_" + ksuid.New().String()
+	//@Todo better context
+	return w.WriteMessages(context.Background(), kafka.Message{Key: []byte(key), Value: bytes})
 }
