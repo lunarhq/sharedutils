@@ -24,7 +24,7 @@ func Post(title string, items ...Field) {
 	}
 
 	payload := slack.Payload{Text: title, Attachments: []slack.Attachment{att}}
-	log.Println("Sending msg to slack")
+	log.Println("Sending:", title)
 	if err := slack.Send(Endpoint, "", payload); len(err) > 0 {
 		fmt.Printf("Err sending to slack: %s\n", err)
 	}
