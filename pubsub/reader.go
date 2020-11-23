@@ -21,7 +21,7 @@ func NewReader(topic, group string) (*Reader, error) {
 	return &Reader{r}, nil
 }
 
-func (r *Reader) Read(out *interface{}) error {
+func (r *Reader) Read(out interface{}) error {
 	m, err := r.ReadMessage(context.Background())
 	if err != nil {
 		return err
