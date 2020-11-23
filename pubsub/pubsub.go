@@ -6,9 +6,17 @@ const (
 )
 
 const (
+	TopicAccountCreated = "account.created"
+	TopicAccountUpdated = "account.updated"
+	TopicAccountDeleted = "account.deleted"
+
 	TopicKeyCreated = "key.created"
 	TopicKeyUpdated = "key.updated"
 	TopicKeyDeleted = "key.deleted"
+
+	TopicPaymentMethodCreated = "paymentmethod.created"
+	TopicPaymentMethodUpdated = "paymentmethod.updated"
+	TopicPaymentMethodDeleted = "paymentmethod.deleted"
 
 	TopicError = "error"
 )
