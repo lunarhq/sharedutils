@@ -2,6 +2,7 @@ package slack
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ashwanthkumar/slack-go-webhook"
 	"github.com/lunarhq/sharedutils/env"
@@ -23,6 +24,7 @@ func Post(title string, items ...Field) {
 	}
 
 	payload := slack.Payload{Text: title, Attachments: []slack.Attachment{att}}
+	log.Println("Sending msg to slack")
 	if err := slack.Send(Endpoint, "", payload); len(err) > 0 {
 		fmt.Printf("Err sending to slack: %s\n", err)
 	}
