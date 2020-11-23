@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/lunarhq/sharedutils/types"
 	"github.com/segmentio/kafka-go"
 	"github.com/segmentio/ksuid"
 )
@@ -33,6 +34,21 @@ func (p *Writer) getWriter(topic string) *kafka.Writer {
 func (p *Writer) Write(topic string, data interface{}) error {
 	w := p.getWriter(topic)
 	bytes, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	//@Todo Overridable key
+	key := topic + "_" + ksuid.New().String()
+	//@Todo better context
+	return w.WriteMessages(context.Background(), kafka.Message{Key: []byte(key), Value: bytes})
+}
+
+func (p *Writer) WriteErr(msg string) error {
+	topic := TopicError
+	w := p.getWriter(topic)
+
+	errorType := types.Error{msg}
+	bytes, err := json.Marshal(errorType)
 	if err != nil {
 		return err
 	}
