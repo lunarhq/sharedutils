@@ -2,7 +2,8 @@ package pubsub
 
 const (
 	//@Todo move to env
-	PubsubBrokers = "kafka-0.kafka-hs:9093,kafka-1.kafka-hs:9093,kafka-2.kafka-hs:9093"
+	KafkaEndpoint = "shared-kafka.default.svc.cluster.local"
+	PubsubBrokers = "shared-kafka-0.shared-kafka-headless.default.svc.cluster.local:9092,shared-kafka-1.shared-kafka-headless.default.svc.cluster.local:9092,shared-kafka-2.shared-kafka-headless.default.svc.cluster.local:9092"
 )
 
 const (

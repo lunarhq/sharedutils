@@ -6,8 +6,12 @@ import (
 )
 
 func TestWriter(t *testing.T) {
-	w := NewWriter()
-	err := w.Write(TopicKeyCreated, "test")
+	w, err := NewWriter()
+	if err != nil {
+		log.Println(err)
+		t.Fail()
+	}
+	err = w.Write(TopicKeyCreated, "test")
 	if err != nil {
 		log.Println(err)
 		t.Fail()
