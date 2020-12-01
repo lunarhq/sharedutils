@@ -19,5 +19,6 @@ const (
 	TopicPaymentMethodUpdated = "paymentmethod.updated"
 	TopicPaymentMethodDeleted = "paymentmethod.deleted"
 
-	TopicError = "error"
+	TopicError        = "error"
+	TopicApiRequested = "api.requested"
 )
