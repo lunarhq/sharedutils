@@ -3,7 +3,7 @@ package client
 import (
 	"strings"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"github.com/lunarhq/sharedutils/env"
 	"github.com/lunarhq/sharedutils/redis/key"
 	"github.com/lunarhq/sharedutils/redis/request"

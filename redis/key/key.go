@@ -1,9 +1,10 @@
 package key
 
 import (
+	"context"
 	"encoding/json"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"github.com/lunarhq/sharedutils/types"
 )
 
@@ -12,7 +13,7 @@ type Client struct {
 }
 
 func (c *Client) Get(secretToken string) (*types.Key, error) {
-	b, err := c.R.Get("token-" + secretToken).Bytes()
+	b, err := c.R.Get(context.Background(), "token-"+secretToken).Bytes()
 	if err != nil {
 		return nil, err
 	}
@@ -32,17 +33,17 @@ func (c *Client) Store(key types.Key) error {
 		return err
 	}
 
-	_, err = c.R.Set("token-"+key.SecretToken, payload, 0).Result()
+	_, err = c.R.Set(context.Background(), "token-"+key.SecretToken, payload, 0).Result()
 	return err
 }
 
 func (c *Client) Delete(secretToken string) error {
-	_, err := c.R.Del("token-" + secretToken).Result()
+	_, err := c.R.Del(context.Background(), "token-"+secretToken).Result()
 	return err
 }
 
 //Lists all keys
 func (c *Client) List() ([]string, error) {
 	//@Todo this should be "token-*" I think
-	return c.R.Keys("*").Result()
+	return c.R.Keys(context.Background(), "*").Result()
 }
