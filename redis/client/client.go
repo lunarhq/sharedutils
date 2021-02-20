@@ -22,9 +22,10 @@ type Redis struct {
 
 func New() (*Redis, error) {
 	rc := redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:    RedisMasterName,
-		SentinelAddrs: strings.Split(RedisSentinels, ","),
-		Password:      RedisPassword,
+		MasterName:       RedisMasterName,
+		SentinelAddrs:    strings.Split(RedisSentinels, ","),
+		Password:         RedisPassword,
+		SentinelPassword: RedisPassword,
 	})
 
 	r := &Redis{
