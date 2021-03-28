@@ -5,16 +5,16 @@ import (
 	"errors"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"github.com/lunarhq/sharedutils/database"
 	"github.com/lunarhq/sharedutils/types"
 	"github.com/segmentio/ksuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/api/iterator"
 )
 
 type Client struct {
-	DB *mongo.Database
+	DB  *firestore.Client
+	Ctx context.Context
 }
 
 func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
@@ -23,7 +23,6 @@ func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
 	}
 
 	key := types.Key{
-		ID:          ksuid.New().String(),
 		Created:     time.Now(),
 		AccountID:   *p.AccountID,
 		SecretToken: ksuid.New().String(),
@@ -47,85 +46,89 @@ func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
 		key.Pro = *p.Pro
 	}
 
-	ctx := context.Background()
-	_, err := c.DB.Collection("keys").InsertOne(ctx, key)
+	doc, _, err := c.DB.Collection("keys").Add(c.Ctx, key)
+	if err != nil {
+		key.ID = doc.ID
+	}
 	return &key, err
 }
 
 func (c *Client) Update(id string, p database.KeyUpdateParams) error {
-	ctx := context.Background()
-	payload := bson.M{}
+	updates := []firestore.Update{
+		firestore.Update{Path: "updatedAt", Value: time.Now()},
+	}
 
-	//@Todo use reflect.ValueOf instead of checking all pointers
-	//and setting manually
 	if p.Name != nil {
-		payload["name"] = p.Name
+		u := firestore.Update{Path: "name", Value: p.Name}
+		updates = append(updates, u)
 	}
 	if p.SecretToken != nil {
-		payload["secretToken"] = p.SecretToken
+		u := firestore.Update{Path: "secretToken", Value: p.SecretToken}
+		updates = append(updates, u)
 	}
 	if p.AccountID != nil {
-		payload["accountId"] = p.AccountID
+		u := firestore.Update{Path: "accountId", Value: p.AccountID}
+		updates = append(updates, u)
 	}
 	if p.Status != nil {
-		payload["status"] = p.Status
+		u := firestore.Update{Path: "status", Value: p.Status}
+		updates = append(updates, u)
 	}
 	if p.Pro != nil {
-		payload["pro"] = p.Pro
+		u := firestore.Update{Path: "pro", Value: p.Pro}
+		updates = append(updates, u)
 	}
 
-	_, err := c.DB.Collection("keys").UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": payload})
+	_, err := c.DB.Doc("keys/"+id).Update(c.Ctx, updates)
 	return err
 
 }
 
 func (c *Client) Delete(id string) error {
-	ctx := context.Background()
-	_, err := c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": id})
-	if err != nil {
-		//@Todo hack since some old ids were using primitive ones
-		//Remove this after all keys are migrated to new syntax
-		pid, err := primitive.ObjectIDFromHex(id)
-		if err != nil {
-			return err
-		}
-		_, err = c.DB.Collection("keys").DeleteOne(ctx, bson.M{"_id": pid})
-		if err != nil {
-			return err
-		}
-		return nil
-
-	}
-	return nil
+	_, err := c.DB.Doc("keys/" + id).Delete(c.Ctx)
+	return err
 }
 
 func (c *Client) List(p *database.KeyListParams) ([]*types.Key, error) {
-	filter := bson.M{}
+	var iter *firestore.DocumentIterator
+
+	coll := c.DB.Collection("keys")
 	if p != nil && p.AccountID != nil {
-		filter["accountId"] = p.AccountID
+		iter = coll.Where("accountId", "==", p.AccountID).Documents(c.Ctx)
+	} else {
+		iter = coll.Documents(c.Ctx)
 	}
 
-	ctx := context.Background()
-	cur, err := c.DB.Collection("keys").Find(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-	defer cur.Close(ctx)
+	defer iter.Stop()
 
 	var result []*types.Key
-	err = cur.All(ctx, &result)
-	return result, err
 
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return result, err
+		}
+		var pm *types.Key
+		err = doc.DataTo(pm)
+		if err != nil {
+			return result, err
+		}
+		result = append(result, pm)
+	}
+
+	return result, nil
 }
 
 func (c *Client) Get(id string) (*types.Key, error) {
-	ctx := context.Background()
-	res := c.DB.Collection("keys").FindOne(ctx, bson.M{"_id": id})
-	if res.Err() != nil {
-		return nil, res.Err()
+	doc, err := c.DB.Doc("keys/" + id).Get(c.Ctx)
+	if err != nil {
+		return nil, err
 	}
 	var result types.Key
-	err := res.Decode(&result)
+	err = doc.DataTo(&result)
 	return &result, err
 }
 

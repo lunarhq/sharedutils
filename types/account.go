@@ -3,19 +3,19 @@ package types
 import "time"
 
 type StripeData struct {
-	CustomerID        string            `bson:"customerId" json:"customerId"`
-	SubscriptionItems map[string]string `bson:"subscriptionItems" json:"subscriptionItems"`
-	SubscriptionID    string            `bson:"subscriptionId" json:"subscriptionId"`
+	CustomerID        string            `json:"customerId" firestore:"customerId"`
+	SubscriptionItems map[string]string `json:"subscriptionItems" firestore:"subscriptionItems"`
+	SubscriptionID    string            `json:"subscriptionId" firestore:"subscriptionId"`
 }
 
 type Account struct {
-	ID        string      `bson:"_id" json:"id"`
-	Name      string      `bson:"name" json:"name"`
-	Email     string      `bson:"email" json:"email"`
-	Pro       bool        `bson:"pro" json:"pro"`
-	Internal  bool        `bson:"internal" json:"internal"`
-	Blocked   bool        `bson:"blocked" json:"blocked"`
-	Stripe    *StripeData `bson:"stripe" json:"-"`
-	CreatedAt time.Time   `bson:"createdAt" json:"createdAt"`
-	UpdatedAt time.Time   `bson:"updatedAt" json:"updatedAt"`
+	ID        string      `json:"id" firestore:"id"`
+	Name      string      `json:"name" firestore:"name"`
+	Email     string      `json:"email" firestore:"email"`
+	Pro       bool        `json:"pro" firestore:"pro"`
+	Internal  bool        `json:"internal" firestore:"internal"`
+	Blocked   bool        `json:"blocked" firestore:"blocked"`
+	Stripe    *StripeData `json:"stripe" firestore:"stripe"`
+	CreatedAt time.Time   `json:"createdAt" firestore:"createdAt"`
+	UpdatedAt time.Time   `json:"updatedAt" firestore:"updateAt"`
 }

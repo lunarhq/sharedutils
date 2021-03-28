@@ -2,21 +2,14 @@ package client
 
 import (
 	"context"
-	"time"
+	"fmt"
+	"log"
 
 	"github.com/lunarhq/sharedutils/database/account"
 	"github.com/lunarhq/sharedutils/database/key"
 	"github.com/lunarhq/sharedutils/database/paymentmethod"
 
-	"github.com/lunarhq/sharedutils/env"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-)
-
-var (
-	MongoDBName = env.Get("MONGO_DB_NAME", "lunardb")
-	MongoURI    = env.Get("MONGO_URI", "mongodb://mongo-0.mongo,mongo-1.mongo:27017")
+	firebase "firebase.google.com/go/v4"
 )
 
 type DB struct {
@@ -25,25 +18,22 @@ type DB struct {
 	PaymentMethods *paymentmethod.Client
 }
 
-func New() (*DB, error) {
-	mdb, err := mongo.NewClient(options.Client().ApplyURI(MongoURI))
+func New(ctx context.Context) (*DB, error) {
+	fb, err := firebase.NewApp(ctx, nil)
 	if err != nil {
-		return nil, err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	err = mdb.Connect(ctx)
-	if err != nil {
-		cancel()
-		return nil, err
+		log.Fatal(fmt.Errorf("error initializing Firebase: %v", err))
 	}
 
-	db := mdb.Database(MongoDBName)
+	firestoreClient, err := fb.Firestore(ctx)
+	if err != nil {
+		log.Fatal(fmt.Errorf("error initializing Firstore: %v", err))
+	}
 
 	d := &DB{
-		Keys:           &key.Client{db},
-		Accounts:       &account.Client{db},
-		PaymentMethods: &paymentmethod.Client{db},
+		Keys:           &key.Client{firestoreClient, ctx},
+		Accounts:       &account.Client{firestoreClient, ctx},
+		PaymentMethods: &paymentmethod.Client{firestoreClient, ctx},
 	}
+
 	return d, nil
 }

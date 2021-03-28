@@ -4,83 +4,102 @@ import (
 	"context"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"github.com/lunarhq/sharedutils/database"
 	"github.com/lunarhq/sharedutils/types"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/api/iterator"
 )
 
 type Client struct {
-	DB *mongo.Database
+	DB  *firestore.Client
+	Ctx context.Context
 }
 
 func (c *Client) Create(pm *types.PaymentMethod) error {
-	ctx := context.Background()
 	pm.CreatedAt = time.Now()
-	_, err := c.DB.Collection("payment_methods").InsertOne(ctx, pm)
+	coll := c.DB.Collection("payment_methods")
+	_, _, err := coll.Add(c.Ctx, pm)
 	return err
 }
 
 func (c *Client) Update(id string, p database.PaymentMethodUpdateParams) error {
-	ctx := context.Background()
-	payload := bson.M{}
+	updates := []firestore.Update{
+		firestore.Update{Path: "updatedAt", Value: time.Now()},
+	}
 
 	if p.AccountID != nil {
-		payload["accountId"] = p.AccountID
+		u := firestore.Update{Path: "accountId", Value: p.AccountID}
+		updates = append(updates, u)
 	}
 	if p.StripeCustomerID != nil {
-		payload["stripeCustomerId"] = p.StripeCustomerID
+		u := firestore.Update{Path: "stripeCustomerId", Value: p.StripeCustomerID}
+		updates = append(updates, u)
 	}
 	if p.Brand != nil {
-		payload["brand"] = p.Brand
+		u := firestore.Update{Path: "brand", Value: p.Brand}
+		updates = append(updates, u)
 	}
 	if p.Last4 != nil {
-		payload["last4"] = p.Last4
+		u := firestore.Update{Path: "last4", Value: p.Last4}
+		updates = append(updates, u)
 	}
 	if p.Expiry != nil {
-		payload["expiry"] = p.Expiry
+		u := firestore.Update{Path: "expiry", Value: p.Expiry}
+		updates = append(updates, u)
 	}
 	if p.Status != nil {
-		payload["status"] = p.Status
+		u := firestore.Update{Path: "status", Value: p.Status}
+		updates = append(updates, u)
 	}
 
-	payload["updatedAt"] = time.Now()
-
-	_, err := c.DB.Collection("payment_methods").UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": payload})
+	_, err := c.DB.Doc("payment_methods/"+id).Update(c.Ctx, updates)
 	return err
 }
 
 func (c *Client) Delete(id string) error {
-	ctx := context.Background()
-	_, err := c.DB.Collection("payment_methods").DeleteOne(ctx, bson.M{"_id": id})
+	_, err := c.DB.Doc("payment_methods/" + id).Delete(c.Ctx)
 	return err
 }
 
 func (c *Client) List(p *database.PaymentMethodListParams) ([]*types.PaymentMethod, error) {
-	filter := bson.M{}
+	var iter *firestore.DocumentIterator
+
+	coll := c.DB.Collection("payment_methods")
 	if p != nil && p.AccountID != nil {
-		filter["accountId"] = p.AccountID
+		iter = coll.Where("accountId", "==", p.AccountID).Documents(c.Ctx)
+	} else {
+		iter = coll.Documents(c.Ctx)
 	}
 
-	ctx := context.Background()
-	cur, err := c.DB.Collection("payment_methods").Find(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-	defer cur.Close(ctx)
+	defer iter.Stop()
 
 	var result []*types.PaymentMethod
-	err = cur.All(ctx, &result)
-	return result, err
+
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return result, err
+		}
+		var pm *types.PaymentMethod
+		err = doc.DataTo(pm)
+		if err != nil {
+			return result, err
+		}
+		result = append(result, pm)
+	}
+
+	return result, nil
 }
 
 func (c *Client) Get(id string) (*types.PaymentMethod, error) {
-	ctx := context.Background()
-	res := c.DB.Collection("payment_methods").FindOne(ctx, bson.M{"_id": id})
-	if res.Err() != nil {
-		return nil, res.Err()
+	doc, err := c.DB.Doc("payment_methods/" + id).Get(c.Ctx)
+	if err != nil {
+		return nil, err
 	}
 	var result types.PaymentMethod
-	err := res.Decode(&result)
+	err = doc.DataTo(&result)
 	return &result, err
 }
