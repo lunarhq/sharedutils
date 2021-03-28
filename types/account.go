@@ -17,5 +17,5 @@ type Account struct {
 	Blocked   bool        `json:"blocked" firestore:"blocked"`
 	Stripe    *StripeData `json:"stripe" firestore:"stripe"`
 	CreatedAt time.Time   `json:"createdAt" firestore:"createdAt"`
-	UpdatedAt time.Time   `json:"updatedAt" firestore:"updateAt"`
+	UpdatedAt time.Time   `json:"updatedAt" firestore:"updatedAt"`
 }
