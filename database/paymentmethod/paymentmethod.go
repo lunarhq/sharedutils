@@ -17,8 +17,9 @@ type Client struct {
 
 func (c *Client) Create(pm *types.PaymentMethod) error {
 	pm.CreatedAt = time.Now()
-	coll := c.DB.Collection("payment_methods")
-	_, _, err := coll.Add(c.Ctx, pm)
+	//@Todo make sure this id doesn't exist already
+	docRef := c.DB.Collection("payment_methods").Doc(pm.ID)
+	_, err := docRef.Set(c.Ctx, pm)
 	return err
 }
 

@@ -47,7 +47,7 @@ func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
 	}
 
 	doc, _, err := c.DB.Collection("keys").Add(c.Ctx, key)
-	if err != nil {
+	if err == nil {
 		key.ID = doc.ID
 	}
 	return &key, err
