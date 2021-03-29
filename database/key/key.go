@@ -111,12 +111,12 @@ func (c *Client) List(p *database.KeyListParams) ([]*types.Key, error) {
 		if err != nil {
 			return result, err
 		}
-		var pm *types.Key
-		err = doc.DataTo(pm)
+		var pm types.Key
+		err = doc.DataTo(&pm)
 		if err != nil {
 			return result, err
 		}
-		result = append(result, pm)
+		result = append(result, &pm)
 	}
 
 	return result, nil

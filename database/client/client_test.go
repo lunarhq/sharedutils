@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/lunarhq/sharedutils/database"
 	"github.com/lunarhq/sharedutils/types"
 )
@@ -119,6 +120,14 @@ func TestClient(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	pms, err := c.PaymentMethods.List(&database.PaymentMethodListParams{AccountID: database.String("TgMpv08UayOAC1095XhehxY8XWx1")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	spew.Dump(pms)
+	if len(pms) != 1 {
+		t.Fatal("Failed pms")
+	}
 	_, err = c.PaymentMethods.Get(pm.ID)
 	if err != nil {
 		t.Fatal(err)

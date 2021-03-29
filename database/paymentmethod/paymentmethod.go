@@ -84,12 +84,12 @@ func (c *Client) List(p *database.PaymentMethodListParams) ([]*types.PaymentMeth
 		if err != nil {
 			return result, err
 		}
-		var pm *types.PaymentMethod
-		err = doc.DataTo(pm)
+		var pm types.PaymentMethod
+		err = doc.DataTo(&pm)
 		if err != nil {
 			return result, err
 		}
-		result = append(result, pm)
+		result = append(result, &pm)
 	}
 
 	return result, nil
