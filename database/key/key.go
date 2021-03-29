@@ -116,6 +116,7 @@ func (c *Client) List(p *database.KeyListParams) ([]*types.Key, error) {
 		if err != nil {
 			return result, err
 		}
+		pm.ID = doc.Ref.ID
 		result = append(result, &pm)
 	}
 
