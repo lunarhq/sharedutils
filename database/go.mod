@@ -10,9 +10,10 @@ require (
 	github.com/coinbase/rosetta-sdk-go v0.6.10 // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/lunarhq/sharedutils v0.0.0-20210329074324-82fe9b2550b4
-	github.com/lunarhq/sharedutils/types v0.0.0-20210328142354-a51a3f852a10
+	github.com/lunarhq/sharedutils/types v0.0.0-20210329082128-1df479cf3688
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/segmentio/ksuid v1.0.3
+	github.com/sethvargo/go-password v0.2.0
 	github.com/stretchr/testify v1.7.0
 	go.mongodb.org/mongo-driver v1.4.3
 	golang.org/x/exp v0.0.0-20210220032938-85be41e4509f // indirect

@@ -323,6 +323,8 @@ github.com/lunarhq/sharedutils/types v0.0.0-20210328081456-a346a98501d3 h1:xPUTc
 github.com/lunarhq/sharedutils/types v0.0.0-20210328081456-a346a98501d3/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
 github.com/lunarhq/sharedutils/types v0.0.0-20210328142354-a51a3f852a10 h1:lgp6kBU1U6RizBG9apXcfLKMF/CflIRFaqdqs6qzWfA=
 github.com/lunarhq/sharedutils/types v0.0.0-20210328142354-a51a3f852a10/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
+github.com/lunarhq/sharedutils/types v0.0.0-20210329082128-1df479cf3688 h1:JmfrA8lhg2ksoUHU17eh5woOyufwyMbSwotg9ltxtV4=
+github.com/lunarhq/sharedutils/types v0.0.0-20210329082128-1df479cf3688/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2/go.mod h1:Ld9puTsIW75CHf65OeIOkyKbteujpZVXDpWK6YGZbxE=
 github.com/markbates/safe v1.0.1/go.mod h1:nAqgmRi7cY2nqMc92/bSEeQA+R4OheNU2T1kNSCBdG0=
@@ -385,6 +387,8 @@ github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQD
 github.com/segmentio/fasthash v1.0.3/go.mod h1:waKX8l2N8yckOgmSsXJi7x1ZfdKZ4x7KRMzBtS3oedY=
 github.com/segmentio/ksuid v1.0.3 h1:FoResxvleQwYiPAVKe1tMUlEirodZqlqglIuFsdDntY=
 github.com/segmentio/ksuid v1.0.3/go.mod h1:/XUiZBD3kVx5SmUOl55voK5yeAbBNNIed+2O73XgrPE=
+github.com/sethvargo/go-password v0.2.0 h1:BTDl4CC/gjf/axHMaDQtw507ogrXLci6XRiLc7i/UHI=
+github.com/sethvargo/go-password v0.2.0/go.mod h1:Ym4Mr9JXLBycr02MFuVQ/0JHidNetSgbzutTr3zsYXE=
 github.com/shirou/gopsutil v2.20.5+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeVRXNmyL/1OwPU0+IJeTBvfc=
 github.com/sirupsen/logrus v1.4.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=

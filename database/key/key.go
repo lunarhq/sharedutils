@@ -8,8 +8,9 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/lunarhq/sharedutils/database"
 	"github.com/lunarhq/sharedutils/types"
-	"github.com/segmentio/ksuid"
 	"google.golang.org/api/iterator"
+
+	"github.com/sethvargo/go-password/password"
 )
 
 type Client struct {
@@ -22,10 +23,17 @@ func (c *Client) Create(p database.KeyCreateParams) (*types.Key, error) {
 		return nil, errors.New("AccountID required")
 	}
 
+	// Generate a password that is 32 characters long with 6 digits, 0 symbols,
+	// allowing upper and lower case letters, disallowing repeat characters.
+	token, err := password.Generate(32, 6, 0, false, true)
+	if err != nil {
+		return nil, errors.New("Err generating secret token:" + err.Error())
+	}
+
 	key := types.Key{
 		Created:     time.Now(),
 		AccountID:   *p.AccountID,
-		SecretToken: ksuid.New().String(),
+		SecretToken: token,
 		Status:      "pending",
 		Pro:         false,
 	}
