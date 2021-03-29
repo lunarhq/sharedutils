@@ -89,6 +89,7 @@ func (c *Client) List(p *database.PaymentMethodListParams) ([]*types.PaymentMeth
 		if err != nil {
 			return result, err
 		}
+		pm.ID = doc.Ref.ID
 		result = append(result, &pm)
 	}
 
