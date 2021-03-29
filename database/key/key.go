@@ -138,6 +138,7 @@ func (c *Client) Get(id string) (*types.Key, error) {
 	}
 	var result types.Key
 	err = doc.DataTo(&result)
+	result.ID = doc.Ref.ID
 	return &result, err
 }
 

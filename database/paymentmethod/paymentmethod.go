@@ -103,5 +103,6 @@ func (c *Client) Get(id string) (*types.PaymentMethod, error) {
 	}
 	var result types.PaymentMethod
 	err = doc.DataTo(&result)
+	result.ID = doc.Ref.ID
 	return &result, err
 }
