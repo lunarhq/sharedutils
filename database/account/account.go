@@ -161,13 +161,13 @@ func (c *Client) GetByStripeID(stripeID string) (*types.Account, error) {
 		if err != nil {
 			return nil, err
 		}
-		var pm *types.Account
-		err = doc.DataTo(pm)
+		var pm types.Account
+		err = doc.DataTo(&pm)
 		if err != nil {
 			return nil, err
 		}
 		pm.ID = doc.Ref.ID
-		result = append(result, pm)
+		result = append(result, &pm)
 	}
 
 	if len(result) > 1 {
@@ -175,7 +175,7 @@ func (c *Client) GetByStripeID(stripeID string) (*types.Account, error) {
 		return nil, errors.New("Multiple result found:")
 	}
 
-	if len(result) == 1 {
+	if len(result) < 1 {
 		return nil, errors.New("No results found")
 	}
 
