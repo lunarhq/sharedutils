@@ -315,6 +315,8 @@ github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+
 github.com/lucasjones/reggen v0.0.0-20180717132126-cdb49ff09d77/go.mod h1:5ELEyG+X8f+meRWHuqUOewBOhvHkl7M76pdGEansxW4=
 github.com/lunarhq/sharedutils v0.0.0-20201120080734-a73ae49996f1 h1:ECuMnCMOZ1Xy1GZOU2/BNEIg3mr7jDrXincoCUSD5R8=
 github.com/lunarhq/sharedutils v0.0.0-20201120080734-a73ae49996f1/go.mod h1:zcJ+777asMzdxzgds+PVKF5CikiiJQShwRlajqVs8aE=
+github.com/lunarhq/sharedutils v0.0.0-20210329074324-82fe9b2550b4 h1:I4Ani7VBVW9R49/eMZe/gHCOav1jI1k9oVV7BdvUJAM=
+github.com/lunarhq/sharedutils v0.0.0-20210329074324-82fe9b2550b4/go.mod h1:zcJ+777asMzdxzgds+PVKF5CikiiJQShwRlajqVs8aE=
 github.com/lunarhq/sharedutils/types v0.0.0-20201122002619-c1b5de7d9a6a h1:frvWL4xX8G1RRcnjJwrFPElcAwRCyr+hBf0ysm4a1rI=
 github.com/lunarhq/sharedutils/types v0.0.0-20201122002619-c1b5de7d9a6a/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
 github.com/lunarhq/sharedutils/types v0.0.0-20210328081456-a346a98501d3 h1:xPUTctx4EhHv9vdcKpPtKAV5hTIFFTdjzvJopxJpq0k=
