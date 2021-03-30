@@ -13,13 +13,15 @@ type Reader struct {
 	Sub    *pb.Subscription
 }
 
-func NewReader(ctx context.Context, subscription string) (*Reader, error) {
+func NewReader(ctx context.Context) (*Reader, error) {
 	projectID := env.Get("PROJECT_ID", "")
 	client, err := pb.NewClient(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
-	sub := client.Subscription(subscription)
+	return &Reader{ctx: ctx, client: client}, nil
+}
 
-	return &Reader{ctx: ctx, client: client, Sub: sub}, nil
+func (r *Reader) Subscription(sub string) *pb.Subscription {
+	return r.client.Subscription(sub)
 }
