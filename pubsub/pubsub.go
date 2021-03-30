@@ -1,24 +1,20 @@
 package pubsub
 
 const (
-	//@Todo move to env
-	KafkaEndpoint = "shared-kafka.default.svc.cluster.local"
-	PubsubBrokers = "shared-kafka-0.shared-kafka-headless.default.svc.cluster.local:9092,shared-kafka-1.shared-kafka-headless.default.svc.cluster.local:9092,shared-kafka-2.shared-kafka-headless.default.svc.cluster.local:9092"
-)
+	TopicTest = "test"
 
-const (
-	TopicAccountCreated = "account.created"
-	TopicAccountUpdated = "account.updated"
-	TopicAccountDeleted = "account.deleted"
+	TopicAccountCreated = "account_created"
+	TopicAccountUpdated = "account_updated"
+	TopicAccountDeleted = "account_deleted"
 
-	TopicKeyCreated = "key.created"
-	TopicKeyUpdated = "key.updated"
-	TopicKeyDeleted = "key.deleted"
+	TopicKeyCreated = "key_created"
+	TopicKeyUpdated = "key_updated"
+	TopicKeyDeleted = "key_deleted"
 
-	TopicPaymentMethodCreated = "paymentmethod.created"
-	TopicPaymentMethodUpdated = "paymentmethod.updated"
-	TopicPaymentMethodDeleted = "paymentmethod.deleted"
+	TopicPaymentMethodCreated = "paymentmethod_created"
+	TopicPaymentMethodUpdated = "paymentmethod_updated"
+	TopicPaymentMethodDeleted = "paymentmethod_deleted"
 
 	TopicError        = "error"
-	TopicApiRequested = "api.requested"
+	TopicApiRequested = "api_requested"
 )

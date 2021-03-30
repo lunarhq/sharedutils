@@ -2,43 +2,24 @@ package pubsub
 
 import (
 	"context"
-	"encoding/json"
-	"time"
 
+	pb "cloud.google.com/go/pubsub"
 	"github.com/lunarhq/sharedutils/env"
-	"github.com/segmentio/kafka-go"
-	"github.com/segmentio/kafka-go/sasl/scram"
 )
 
 type Reader struct {
-	*kafka.Reader
+	ctx    context.Context
+	client *pb.Client
+	Sub    *pb.Subscription
 }
 
-func NewReader(topic, group string) (*Reader, error) {
-	pwd := env.Get("client-passwords", "supersecret")
-	mechanism, err := scram.Mechanism(scram.SHA256, "user", pwd)
+func NewReader(ctx context.Context, subscription string) (*Reader, error) {
+	projectID := env.Get("PROJECT_ID", "")
+	client, err := pb.NewClient(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
+	sub := client.Subscription(subscription)
 
-	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{KafkaEndpoint},
-		Topic:   topic,
-		GroupID: group,
-		Dialer: &kafka.Dialer{
-			Timeout:       3 * time.Second,
-			SASLMechanism: mechanism,
-			// DualStack:     true, //@Todo is this needed?
-		},
-		MaxWait: time.Second,
-	})
-	return &Reader{r}, nil
-}
-
-func (r *Reader) Read(out interface{}) error {
-	m, err := r.ReadMessage(context.Background())
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(m.Value, out)
+	return &Reader{ctx: ctx, client: client, Sub: sub}, nil
 }

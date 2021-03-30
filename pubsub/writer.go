@@ -3,73 +3,66 @@ package pubsub
 import (
 	"context"
 	"encoding/json"
-	"strings"
-	"time"
+	"sync"
 
+	pb "cloud.google.com/go/pubsub"
 	"github.com/lunarhq/sharedutils/env"
 	"github.com/lunarhq/sharedutils/types"
-	"github.com/segmentio/kafka-go"
-	"github.com/segmentio/kafka-go/sasl/scram"
-	"github.com/segmentio/ksuid"
 )
 
 type Writer struct {
-	w map[string]*kafka.Writer
-	d *kafka.Dialer
+	ctx    context.Context
+	client *pb.Client
+	topics map[string]*pb.Topic
+	mu     sync.RWMutex
 }
 
-func NewWriter() (*Writer, error) {
-	pwd := env.Get("client-passwords", "supersecret")
-	mechanism, err := scram.Mechanism(scram.SHA256, "user", pwd)
+func NewWriter(ctx context.Context) (*Writer, error) {
+	projectID := env.Get("PROJECT_ID", "")
+	client, err := pb.NewClient(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
-	dialer := &kafka.Dialer{
-		Timeout:       3 * time.Second,
-		SASLMechanism: mechanism,
-		// DualStack:     true,
-	}
-	return &Writer{w: make(map[string]*kafka.Writer), d: dialer}, nil
+	return &Writer{ctx: ctx,
+		client: client,
+		topics: map[string]*pb.Topic{},
+		mu:     sync.RWMutex{}}, nil
 }
 
-func (p *Writer) getWriter(topic string) *kafka.Writer {
-	w, found := p.w[topic]
-	if !found {
-		w = kafka.NewWriter(kafka.WriterConfig{
-			Brokers:      strings.Split(PubsubBrokers, ","),
-			Topic:        topic,
-			Balancer:     &kafka.LeastBytes{},
-			Dialer:       p.d,
-			BatchTimeout: 10 * time.Millisecond,
-		})
-		p.w[topic] = w
+func (p *Writer) getTopic(topic string) *pb.Topic {
+	p.mu.RLock()
+	t, ok := p.topics[topic]
+	p.mu.RUnlock()
+	if !ok {
+		t = p.client.Topic(topic)
+		p.mu.Lock()
+		p.topics[topic] = t
+		p.mu.Unlock()
 	}
-	return w
+	return t
 }
 
 func (p *Writer) Write(topic string, data interface{}) error {
-	w := p.getWriter(topic)
+	t := p.getTopic(topic)
+
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
-	//@Todo Overridable key
-	key := topic + "_" + ksuid.New().String()
-	//@Todo better context
-	return w.WriteMessages(context.Background(), kafka.Message{Key: []byte(key), Value: bytes})
+	res := t.Publish(p.ctx, &pb.Message{Data: bytes})
+	//@Todo sync/async??
+	_, err = res.Get(p.ctx)
+	return err
+	// return nil
 }
 
 func (p *Writer) WriteErr(msg string) error {
-	topic := TopicError
-	w := p.getWriter(topic)
+	data := types.Error{msg}
+	return p.Write(TopicError, data)
+}
 
-	errorType := types.Error{msg}
-	bytes, err := json.Marshal(errorType)
-	if err != nil {
-		return err
+func (p *Writer) Close() {
+	for _, t := range p.topics {
+		t.Stop()
 	}
-	//@Todo Overridable key
-	key := topic + "_" + ksuid.New().String()
-	//@Todo better context
-	return w.WriteMessages(context.Background(), kafka.Message{Key: []byte(key), Value: bytes})
 }
