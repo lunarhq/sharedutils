@@ -5,7 +5,6 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/lunarhq/sharedutils/types"
-	"google.golang.org/api/iterator"
 )
 
 type Client struct {
@@ -13,27 +12,19 @@ type Client struct {
 	Ctx context.Context
 }
 
-func (c *Client) ListByDate(date string) ([]*types.Usage, error) {
-	iter := c.DB.Collection("api_usage").Where("date", "==", date).Documents(c.Ctx)
-	defer iter.Stop()
-	var result []*types.Usage
-
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
-		var item types.Usage
-		err = doc.DataTo(&item)
-		if err != nil {
-			return nil, err
-		}
-		item.ID = doc.Ref.ID
-		result = append(result, &item)
+func (c *Client) Get(accId string, date string) (*types.Usage, error) {
+	doc, err := c.DB.Doc("/api_usage/" + accId + "/items" + date).Get(c.Ctx)
+	if err != nil {
+		return nil, err
 	}
 
-	return result, nil
+	var item types.Usage
+	err = doc.DataTo(&item)
+	if err != nil {
+		return nil, err
+	}
+	item.AccountID = accId
+	item.Date = date
+
+	return &item, nil
 }
