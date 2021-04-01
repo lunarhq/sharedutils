@@ -13,7 +13,7 @@ type Client struct {
 	Ctx context.Context
 }
 
-func (c *Client) ListByDate(date string) (*types.Usage, error) {
+func (c *Client) ListByDate(date string) ([]*types.Usage, error) {
 	iter := c.DB.Collection("api_usage").Where("date", "==", date).Documents(c.Ctx)
 	defer iter.Stop()
 	var result []*types.Account
