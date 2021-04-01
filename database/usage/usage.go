@@ -5,6 +5,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/lunarhq/sharedutils/types"
+	"google.golang.org/api/iterator"
 )
 
 type Client struct {
