@@ -53,7 +53,7 @@ func (p *Writer) Write(topic string, data interface{}) error {
 	res := t.Publish(p.ctx, &pb.Message{Data: bytes})
 	log.Println("got resp:", topic, res)
 	//@Todo sync/async??
-	r, err = res.Get(p.ctx)
+	r, err := res.Get(p.ctx)
 	log.Println("Write result", r)
 	log.Println("Write err:", err)
 	return err
