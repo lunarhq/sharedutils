@@ -18,12 +18,14 @@ func (c *Client) Get(accId string, date string) (*types.Usage, error) {
 	log.Println("key:", key)
 	doc, err := c.DB.Doc(key).Get(c.Ctx)
 	if err != nil {
+		log.Println("err 1")
 		return nil, err
 	}
 
 	var item types.Usage
 	err = doc.DataTo(&item)
 	if err != nil {
+		log.Println("err 2")
 		return nil, err
 	}
 	item.AccountID = accId
