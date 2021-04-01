@@ -144,8 +144,6 @@ func (c *Client) Get(id string) (*types.Key, error) {
 }
 
 func (c *Client) GetBySecretKey(secret string) (*types.Key, error) {
-	var iter *firestore.DocumentIterator
-
 	iter := c.DB.Collection("keys").Where("secretToken", "==", secret).Documents(c.Ctx)
 	defer iter.Stop()
 
