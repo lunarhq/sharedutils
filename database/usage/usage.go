@@ -2,7 +2,6 @@ package usage
 
 import (
 	"context"
-	"log"
 
 	"cloud.google.com/go/firestore"
 	"github.com/lunarhq/sharedutils/types"
@@ -15,17 +14,14 @@ type Client struct {
 
 func (c *Client) Get(accId string, date string) (*types.Usage, error) {
 	key := "api_usage/" + accId + "/items/" + date
-	log.Println("key:", key)
 	doc, err := c.DB.Doc(key).Get(c.Ctx)
 	if err != nil {
-		log.Println("err 1")
 		return nil, err
 	}
 
 	var item types.Usage
 	err = doc.DataTo(&item)
 	if err != nil {
-		log.Println("err 2")
 		return nil, err
 	}
 	item.AccountID = accId
