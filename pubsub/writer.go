@@ -3,7 +3,6 @@ package pubsub
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"sync"
 
 	pb "cloud.google.com/go/pubsub"
@@ -51,13 +50,9 @@ func (p *Writer) Write(topic string, data interface{}) error {
 		return err
 	}
 	res := t.Publish(p.ctx, &pb.Message{Data: bytes})
-	log.Println("got resp:", topic, res)
 	//@Todo sync/async??
-	r, err := res.Get(p.ctx)
-	log.Println("Write result", r)
-	log.Println("Write err:", err)
+	_, err = res.Get(p.ctx)
 	return err
-	// return nil
 }
 
 func (p *Writer) WriteErr(msg string) error {
