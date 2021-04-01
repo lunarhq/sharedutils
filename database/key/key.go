@@ -155,12 +155,12 @@ func (c *Client) GetBySecretKey(secret string) (*types.Key, error) {
 			break
 		}
 		if err != nil {
-			return result, err
+			return nil, err
 		}
 		var pm types.Key
 		err = doc.DataTo(&pm)
 		if err != nil {
-			return result, err
+			return nil, err
 		}
 		pm.ID = doc.Ref.ID
 		result = append(result, &pm)
