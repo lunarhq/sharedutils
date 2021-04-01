@@ -3,6 +3,7 @@ package key
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -142,4 +143,40 @@ func (c *Client) Get(id string) (*types.Key, error) {
 	return &result, err
 }
 
-func (c *Client) GetBySecretToken() error { return nil }
+func (c *Client) GetBySecretKey(secret string) (*types.Key, error) {
+	var iter *firestore.DocumentIterator
+
+	iter := c.DB.Collection("keys").Where("secretToken", "==", secret).Documents(c.Ctx)
+	defer iter.Stop()
+
+	var result []*types.Key
+
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return result, err
+		}
+		var pm types.Key
+		err = doc.DataTo(&pm)
+		if err != nil {
+			return result, err
+		}
+		pm.ID = doc.Ref.ID
+		result = append(result, &pm)
+	}
+
+	if len(result) > 1 {
+		log.Println(result)
+		return nil, errors.New("Multiple result found:")
+	}
+
+	if len(result) < 1 {
+		return nil, errors.New("No results found")
+	}
+
+	return result[0], nil
+
+}
