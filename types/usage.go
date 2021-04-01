@@ -8,5 +8,5 @@ type Usage struct {
 	Network    string `json:"network" firestore:"network"`
 	IsMainnet  bool   `json:"isMainnet" firestore:"isMainnet"`
 	Date       string `json:"date" firestore:"date"`
-	Hits       int    `json:"hits" firestore:"hits"`
+	Hits       int64  `json:"hits" firestore:"hits"`
 }
