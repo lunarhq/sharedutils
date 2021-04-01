@@ -13,7 +13,7 @@ type Client struct {
 }
 
 func (c *Client) Get(accId string, date string) (*types.Usage, error) {
-	doc, err := c.DB.Doc("/api_usage/" + accId + "/items" + date).Get(c.Ctx)
+	doc, err := c.DB.Doc("/api_usage/" + accId + "/items/" + date).Get(c.Ctx)
 	if err != nil {
 		return nil, err
 	}
