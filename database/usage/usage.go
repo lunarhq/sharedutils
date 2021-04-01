@@ -16,7 +16,7 @@ type Client struct {
 func (c *Client) ListByDate(date string) ([]*types.Usage, error) {
 	iter := c.DB.Collection("api_usage").Where("date", "==", date).Documents(c.Ctx)
 	defer iter.Stop()
-	var result []*types.Account
+	var result []*types.Usage
 
 	for {
 		doc, err := iter.Next()
