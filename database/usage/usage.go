@@ -42,7 +42,7 @@ func (c *Client) Increment(accId string, date string, networkType string, hits i
 	}
 
 	updates := []firestore.Update{
-		firestore.Update{Path: "mainnet", Value: firestore.Increment(hits)},
+		firestore.Update{Path: networkType, Value: firestore.Increment(hits)},
 	}
 	_, err = c.DB.Doc(key).Update(c.Ctx, updates)
 	return err
