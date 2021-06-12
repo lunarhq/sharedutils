@@ -333,6 +333,8 @@ github.com/lunarhq/sharedutils/types v0.0.0-20210401095357-99e32ab9bda1 h1:VULXZ
 github.com/lunarhq/sharedutils/types v0.0.0-20210401095357-99e32ab9bda1/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
 github.com/lunarhq/sharedutils/types v0.0.0-20210401102822-b72ae6793285 h1:e+/cpJ/qcnNgeBuXQ6ESNHxOhjXT+vtLAfbxQcZXtwE=
 github.com/lunarhq/sharedutils/types v0.0.0-20210401102822-b72ae6793285/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
+github.com/lunarhq/sharedutils/types v0.0.0-20210612042014-25f9de68a15d h1:x8otKINMJ0W5htjMOAuSIrSDA6khqrWZ6hLr9mGyRgE=
+github.com/lunarhq/sharedutils/types v0.0.0-20210612042014-25f9de68a15d/go.mod h1:FRtEM0jBw6IcXjJauQjugIjPBn+TkvnMnJyYyiZ4p/c=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2/go.mod h1:Ld9puTsIW75CHf65OeIOkyKbteujpZVXDpWK6YGZbxE=
 github.com/markbates/safe v1.0.1/go.mod h1:nAqgmRi7cY2nqMc92/bSEeQA+R4OheNU2T1kNSCBdG0=
